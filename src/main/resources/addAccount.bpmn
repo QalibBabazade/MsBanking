@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0oz6ojn" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="AccountAddProcess" isExecutable="true">
+    <bpmn:sequenceFlow id="Flow_06cxnk8" sourceRef="Gateway_0esanhx" targetRef="Event_0tf0439">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{!accountIsExits}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_07pdznk" sourceRef="Activity_1dsdbyv" targetRef="Event_1lhrg3r" />
+    <bpmn:sequenceFlow id="Flow_1snyuaq" sourceRef="Activity_14ydrxw" targetRef="Gateway_0esanhx" />
+    <bpmn:sequenceFlow id="Flow_0ov81kx" sourceRef="StartEvent_1" targetRef="Activity_07roegq" />
+    <bpmn:exclusiveGateway id="Gateway_0esanhx" default="Flow_0gsxdjx">
+      <bpmn:incoming>Flow_1snyuaq</bpmn:incoming>
+      <bpmn:outgoing>Flow_06cxnk8</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0gsxdjx</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="Event_1lhrg3r">
+      <bpmn:incoming>Flow_07pdznk</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0ov81kx</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_0tf0439">
+      <bpmn:incoming>Flow_06cxnk8</bpmn:incoming>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_11u5dbn" errorRef="Error_1y0fhuh" />
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Activity_14ydrxw" name="Check Account" camunda:delegateExpression="${accountCheck}">
+      <bpmn:incoming>Flow_1d8882f</bpmn:incoming>
+      <bpmn:outgoing>Flow_1snyuaq</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_1dsdbyv" name="Add Account" camunda:delegateExpression="${addAccount}">
+      <bpmn:incoming>Flow_0gsxdjx</bpmn:incoming>
+      <bpmn:outgoing>Flow_07pdznk</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_07roegq" name="Check Request Data" camunda:delegateExpression="${checkRequestData}">
+      <bpmn:incoming>Flow_0ov81kx</bpmn:incoming>
+      <bpmn:outgoing>Flow_1d8882f</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0gsxdjx" sourceRef="Gateway_0esanhx" targetRef="Activity_1dsdbyv" />
+    <bpmn:sequenceFlow id="Flow_1d8882f" sourceRef="Activity_07roegq" targetRef="Activity_14ydrxw" />
+    <bpmn:subProcess id="Activity_111xtco" triggeredByEvent="true">
+      <bpmn:endEvent id="Event_1shwv6f">
+        <bpmn:incoming>Flow_1b9cjug</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:serviceTask id="Activity_1f9v65z" name="Exception Handler" camunda:delegateExpression="${exceptionHandler}">
+        <bpmn:incoming>Flow_0ui85sk</bpmn:incoming>
+        <bpmn:outgoing>Flow_1b9cjug</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:sequenceFlow id="Flow_1b9cjug" sourceRef="Activity_1f9v65z" targetRef="Event_1shwv6f" />
+      <bpmn:sequenceFlow id="Flow_0ui85sk" sourceRef="Event_0p37jp5" targetRef="Activity_1f9v65z" />
+      <bpmn:startEvent id="Event_0p37jp5">
+        <bpmn:outgoing>Flow_0ui85sk</bpmn:outgoing>
+        <bpmn:errorEventDefinition id="ErrorEventDefinition_09wg3h2" camunda:errorCodeVariable="errorCode" camunda:errorMessageVariable="errorMessage" />
+      </bpmn:startEvent>
+    </bpmn:subProcess>
+  </bpmn:process>
+  <bpmn:error id="Error_1y0fhuh" name="Error_04s24iu" errorCode="504" camunda:errorMessage="Account already exits!" />
+  <bpmn:error id="Error_0g5kuaw" name="Error_1rcge70" errorCode="502" camunda:errorMessage="Invalid request data!" />
+  <bpmn:error id="Error_0m4jyp4" name="Error_2c4thi8" errorCode="error" />
+  <bpmn:error id="Error_0rf0omg" name="Error_070hh5r" />
+  <bpmn:error id="Error_156mcgg" name="Error_3k92fdu" />
+  <bpmn:error id="Error_02i5y4i" name="Error_1vhuikv" />
+  <bpmn:error id="Error_11oolsp" name="Error_24ajg53" />
+  <bpmn:error id="Error_18sg261" name="Error_2r3g08e" errorCode="errorCode" camunda:errorMessage="errorMessage" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="AccountAddProcess">
+      <bpmndi:BPMNEdge id="Flow_0ov81kx_di" bpmnElement="Flow_0ov81kx">
+        <di:waypoint x="208" y="177" />
+        <di:waypoint x="300" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1snyuaq_di" bpmnElement="Flow_1snyuaq">
+        <di:waypoint x="600" y="177" />
+        <di:waypoint x="685" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07pdznk_di" bpmnElement="Flow_07pdznk">
+        <di:waypoint x="920" y="177" />
+        <di:waypoint x="992" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06cxnk8_di" bpmnElement="Flow_06cxnk8">
+        <di:waypoint x="710" y="152" />
+        <di:waypoint x="710" y="108" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gsxdjx_di" bpmnElement="Flow_0gsxdjx">
+        <di:waypoint x="735" y="177" />
+        <di:waypoint x="820" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1d8882f_di" bpmnElement="Flow_1d8882f">
+        <di:waypoint x="400" y="177" />
+        <di:waypoint x="500" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="172" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_112imue_di" bpmnElement="Activity_1dsdbyv">
+        <dc:Bounds x="820" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1lhrg3r_di" bpmnElement="Event_1lhrg3r">
+        <dc:Bounds x="992" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_04f7gac_di" bpmnElement="Activity_07roegq">
+        <dc:Bounds x="300" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1thv4gf_di" bpmnElement="Activity_14ydrxw">
+        <dc:Bounds x="500" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_192enm7_di" bpmnElement="Gateway_0esanhx" isMarkerVisible="true">
+        <dc:Bounds x="685" y="152" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0hst3vq_di" bpmnElement="Event_0tf0439">
+        <dc:Bounds x="692" y="72" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0rg08qy_di" bpmnElement="Activity_111xtco" isExpanded="true">
+        <dc:Bounds x="690" y="320" width="350" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1b9cjug_di" bpmnElement="Flow_1b9cjug">
+        <di:waypoint x="920" y="420" />
+        <di:waypoint x="972" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ui85sk_di" bpmnElement="Flow_0ui85sk">
+        <di:waypoint x="766" y="420" />
+        <di:waypoint x="820" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1shwv6f_di" bpmnElement="Event_1shwv6f">
+        <dc:Bounds x="972" y="402" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1659udn_di" bpmnElement="Activity_1f9v65z">
+        <dc:Bounds x="820" y="380" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1lwoy5i_di" bpmnElement="Event_0p37jp5">
+        <dc:Bounds x="730" y="402" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
